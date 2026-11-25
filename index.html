@@ -1,0 +1,847 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sing With Me | Winter Romance</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<style>
+
+/* -------------------------
+   GENERAL SETTINGS
+-------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    background: #101722;
+    color: #fff0df;
+    overflow-x: hidden;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+:root {
+    --gold: #f3d9a6;
+    --cream: #fff0df;
+    --night: #101722;
+}
+
+/* -------------------------
+   BACKGROUND
+-------------------------- */
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -5;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 75%,
+            rgba(215,160,120,0.16),
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 15% 15%,
+            rgba(100,140,170,0.18),
+            transparent 40%
+        ),
+        linear-gradient(
+            145deg,
+            #0a111c,
+            #1c2c3a,
+            #101722
+        );
+}
+
+.glow {
+    position: fixed;
+    width: 700px;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(240,200,150,0.10),
+        transparent 70%
+    );
+
+    filter: blur(20px);
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* -------------------------
+   SNOWFALL
+-------------------------- */
+
+#snow {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* -------------------------
+   TOP INDICATORS
+-------------------------- */
+
+.progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    z-index: 20;
+    background: rgba(255,255,255,0.08);
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+
+    background: linear-gradient(
+        90deg,
+        #b68c91,
+        #ffe4a8
+    );
+
+    box-shadow: 0 0 12px var(--gold);
+}
+
+.brand {
+    position: fixed;
+    top: 24px;
+    left: 30px;
+    z-index: 10;
+
+    font: 9px Arial, sans-serif;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+
+    color: rgba(255,255,255,0.55);
+}
+
+.sound {
+    position: fixed;
+    top: 24px;
+    right: 30px;
+    z-index: 10;
+
+    font: 9px Arial, sans-serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    color: rgba(255,255,255,0.6);
+}
+
+.sound-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-right: 8px;
+}
+
+body.playing .sound-dot {
+    box-shadow: 0 0 12px var(--gold);
+}
+
+/* -------------------------
+   FULL SCREEN SECTIONS
+-------------------------- */
+
+.screen {
+    height: 100vh;
+    height: 100svh;
+    min-height: 550px;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+
+    position: relative;
+
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+
+    overflow: hidden;
+}
+
+.screen::before {
+    content: "";
+
+    position: absolute;
+    inset: 6% 4%;
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    pointer-events: none;
+}
+
+/* -------------------------
+   OPENING SCREEN
+-------------------------- */
+
+.opening-content {
+    width: 100%;
+    max-width: 1200px;
+
+    transform: translateY(-20px);
+
+    animation: openingReveal 2s ease forwards;
+}
+
+.small-heading {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+
+    color: var(--gold);
+
+    margin-bottom: 50px;
+}
+
+.main-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(100px, 18vw, 230px);
+    font-weight: 400;
+    line-height: 0.9;
+
+    color: var(--cream);
+
+    text-shadow:
+        0 0 8px rgba(255,240,210,0.8),
+        0 0 25px rgba(243,217,166,0.7),
+        0 0 55px rgba(243,217,166,0.35);
+}
+
+.main-title span {
+    display: block;
+    color: var(--gold);
+    margin-top: 10px;
+}
+
+.separator {
+    width: 65px;
+    height: 1px;
+
+    margin: 45px auto 25px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold),
+        transparent
+    );
+}
+
+.song-name {
+    font: 10px Arial, sans-serif;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 7%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+
+    font: 9px Arial, sans-serif;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.6);
+
+    animation: float 2s infinite ease-in-out;
+}
+
+.scroll-indicator::after {
+    content: "";
+    width: 1px;
+    height: 40px;
+
+    background: linear-gradient(
+        var(--gold),
+        transparent
+    );
+}
+
+/* -------------------------
+   LYRICS
+-------------------------- */
+
+.lyric-screen {
+    isolation: isolate;
+}
+
+.lyric-content {
+    max-width: 1500px;
+    width: 100%;
+
+    opacity: 0;
+
+    transform: translateY(65px);
+    filter: blur(10px);
+
+    transition:
+        opacity 1.2s ease,
+        transform 1.3s cubic-bezier(.2,.7,.2,1),
+        filter 1.2s ease;
+}
+
+.lyric-screen.visible .lyric-content {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+.lyric-number {
+    font: 10px Arial, sans-serif;
+    letter-spacing: 5px;
+    color: rgba(243,217,166,0.7);
+
+    margin-bottom: 45px;
+}
+
+.lyric-text {
+    font-family: 'Great Vibes', cursive;
+
+    font-size: clamp(65px, 10.5vw, 155px);
+    font-weight: 400;
+    line-height: 1.15;
+
+    color: var(--cream);
+
+    text-wrap: balance;
+
+    text-shadow:
+        0 0 8px rgba(255,240,210,0.75),
+        0 0 25px rgba(243,217,166,0.55),
+        0 12px 45px rgba(0,0,0,0.5);
+}
+
+.lyric-screen:nth-child(3n) .lyric-text {
+    color: #f3ddce;
+}
+
+.lyric-screen:last-child .lyric-text {
+    color: var(--gold);
+    font-size: clamp(85px, 13vw, 180px);
+}
+
+.final-decoration {
+    width: 55px;
+    height: 1px;
+    margin: 35px auto;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold),
+        transparent
+    );
+}
+
+.final-note {
+    font: 9px Arial, sans-serif;
+    letter-spacing: 5px;
+    color: rgba(255,255,255,0.5);
+}
+
+/* -------------------------
+   ANIMATIONS
+-------------------------- */
+
+@keyframes openingReveal {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translateY(9px);
+        opacity: 1;
+    }
+}
+
+/* -------------------------
+   MOBILE
+-------------------------- */
+
+@media(max-width: 650px) {
+
+    .brand {
+        left: 16px;
+        top: 18px;
+        font-size: 8px;
+    }
+
+    .sound {
+        right: 16px;
+        top: 18px;
+        font-size: 8px;
+    }
+
+    .screen {
+        padding: 25px;
+    }
+
+    .lyric-text {
+        font-size: clamp(58px, 14vw, 95px);
+    }
+
+    .small-heading {
+        font-size: 8px;
+        letter-spacing: 3px;
+    }
+
+    .song-name {
+        font-size: 8px;
+        letter-spacing: 2px;
+    }
+}
+
+@media(prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+<div class="glow"></div>
+
+<canvas id="snow"></canvas>
+
+<div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="brand">A Winter Romance</div>
+
+<div class="sound">
+    <span class="sound-dot"></span>
+    <span id="soundStatus">Sound Waiting</span>
+</div>
+
+<audio id="song" src="song.mp3" preload="auto"></audio>
+
+<main>
+
+<!-- OPENING SCREEN -->
+
+<section class="screen opening">
+
+    <div class="opening-content">
+
+        <div class="small-heading">
+            A little winter, a little memory
+        </div>
+
+        <h1 class="main-title">
+            sing
+            <span>with me</span>
+        </h1>
+
+        <div class="separator"></div>
+
+        <div class="song-name">
+            Merry Christmas, Please Don't Call
+        </div>
+
+    </div>
+
+    <div class="scroll-indicator">
+        SCROLL TO BEGIN
+    </div>
+
+</section>
+
+<!-- LYRICS WILL BE CREATED HERE -->
+
+<div id="lyrics"></div>
+
+</main>
+
+<script>
+
+/* -------------------------
+   COMPLETE USER-PROVIDED LYRICS
+-------------------------- */
+
+const lyrics = [
+"To the tempo of your uptight",
+"Is the flicker of a streetlight",
+"You know this moment, don't you?",
+"And time is strangely calm now",
+"'Cause everybody's gone",
+"It's just you and your anger",
+"Oh, golden boy, don't act like you were kind",
+"You were mine, but you were awful every time",
+"So don't tell them what you told me",
+"Don't hold me like you know me",
+"I would rather burn forever",
+"But you should know that I died slow",
+"Running through the halls of your haunted home",
+"And the toughest part is that we both know",
+"What happened to you",
+"Why you're out on your own",
+"Merry Christmas, please don't call",
+"You really left me on the line, kid",
+"Holding all your baggage",
+"You know I'm not your father",
+'Who says, "Welcome to your uptight"',
+"While it flickers like a streetlight",
+"He flickers through your damage",
+"Oh, golden boy, you shined a light on your home",
+"And at your best, you were magic, we were sold",
+"But don't tell 'em what you told me",
+"Don't even tell 'em that you know me",
+"I would rather burn forever",
+"But you should know that I died slow",
+"Running through the halls of your haunted home",
+"And the toughest part is that we both know",
+"What happened to you",
+"Why you're out on your own",
+"Merry Christmas, please don't call",
+"Just one ticket out of your heavy gaze",
+"I want one ticket off of your carousel",
+"I want one ticket out of your heavy gaze",
+"I want one ticket off of your carousel",
+"But you should know that I die slow",
+"Running through the halls of your haunted home",
+"And the toughest part is that we both know",
+"What happened to you",
+"Why you're out on your own",
+"Merry Christmas, please don't call",
+"Merry Christmas, I'm not yours at all",
+"Merry Christmas, please don't call me",
+"Please don't call me",
+"Please don't call me",
+"Please don't call me"
+];
+
+
+/* -------------------------
+   CREATE LYRIC SCREENS
+-------------------------- */
+
+const lyricContainer = document.getElementById("lyrics");
+
+lyrics.forEach((line, index) => {
+
+    const section = document.createElement("section");
+
+    section.className = "screen lyric-screen";
+
+    const content = document.createElement("div");
+
+    content.className = "lyric-content";
+
+    const number = document.createElement("div");
+
+    number.className = "lyric-number";
+
+    number.textContent =
+        `${String(index + 1).padStart(2, "0")} / ${lyrics.length}`;
+
+    const text = document.createElement("p");
+
+    text.className = "lyric-text";
+
+    text.textContent = line;
+
+    content.appendChild(number);
+    content.appendChild(text);
+
+    if(index === lyrics.length - 1) {
+
+        const decoration = document.createElement("div");
+
+        decoration.className = "final-decoration";
+
+        const note = document.createElement("div");
+
+        note.className = "final-note";
+
+        note.textContent = "MERRY CHRISTMAS";
+
+        content.appendChild(decoration);
+        content.appendChild(note);
+    }
+
+    section.appendChild(content);
+
+    lyricContainer.appendChild(section);
+
+});
+
+
+/* -------------------------
+   AUDIO SYSTEM
+-------------------------- */
+const song = document.getElementById("song");
+const soundStatus = document.getElementById("soundStatus");
+const soundBtn = document.querySelector(".sound");
+const scrollHint = document.querySelector(".scroll-indicator");
+
+let audioStarted = false;
+
+function startMusic() {
+    if (audioStarted && !song.paused) return;
+
+    song.play().then(() => {
+        audioStarted = true;
+        document.body.classList.add("playing");
+        soundStatus.textContent = "NOW PLAYING";
+    }).catch(() => {
+        soundStatus.textContent = "TAP TO PLAY";
+    });
+}
+
+soundBtn.addEventListener("click", () => {
+    if (song.paused) {
+        startMusic();
+    } else {
+        song.pause();
+        document.body.classList.remove("playing");
+        soundStatus.textContent = "PAUSED";
+    }
+});
+
+scrollHint.addEventListener("click", () => {
+    startMusic();
+    document.querySelector(".lyric-screen")?.scrollIntoView({ behavior: "smooth" });
+});
+
+window.addEventListener("wheel", event => {
+    if (!audioStarted && event.deltaY > 0) {
+        startMusic();
+    }
+}, { passive: true });
+
+let touchStart = null;
+window.addEventListener("touchstart", event => {
+    touchStart = event.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener("touchend", event => {
+    if (!audioStarted && touchStart !== null) {
+        const movement = touchStart - event.changedTouches[0].clientY;
+        if (movement > 12) {
+            startMusic();
+        }
+    }
+    touchStart = null;
+}, { passive: true });
+
+window.addEventListener("keydown", event => {
+    if (!audioStarted && ["ArrowDown", "PageDown", " "].includes(event.key)) {
+        startMusic();
+    }
+});
+
+
+/* -------------------------
+   SCROLL PROGRESS
+-------------------------- */
+
+window.addEventListener("scroll", () => {
+
+    const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+    const percentage =
+        maxScroll > 0
+        ? (window.scrollY / maxScroll) * 100
+        : 0;
+
+    document.getElementById("progressBar").style.width =
+        percentage + "%";
+
+}, { passive: true });
+
+
+/* -------------------------
+   LYRIC TRANSITIONS
+-------------------------- */
+
+const observer = new IntersectionObserver(entries => {
+
+    entries.forEach(entry => {
+
+        if(entry.isIntersecting) {
+
+            entry.target.classList.add("visible");
+
+        }
+
+    });
+
+}, {
+    threshold: 0.4
+});
+
+document.querySelectorAll(".lyric-screen").forEach(section => {
+
+    observer.observe(section);
+
+});
+
+
+/* -------------------------
+   SNOWFALL ANIMATION
+-------------------------- */
+
+const canvas = document.getElementById("snow");
+
+const ctx = canvas.getContext("2d");
+
+let flakes = [];
+
+function resizeSnow() {
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = window.innerWidth * dpr;
+
+    canvas.height = window.innerHeight * dpr;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    flakes = Array.from(
+        { length: Math.min(110, Math.floor(innerWidth / 8)) },
+        () => ({
+
+            x: Math.random() * innerWidth,
+
+            y: Math.random() * innerHeight,
+
+            radius: Math.random() * 1.7 + 0.4,
+
+            speed: Math.random() * 0.5 + 0.2,
+
+            drift: (Math.random() - 0.5) * 0.3,
+
+            opacity: Math.random() * 0.4 + 0.15
+
+        })
+    );
+
+}
+
+function drawSnow() {
+
+    ctx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    flakes.forEach(flake => {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            flake.x,
+            flake.y,
+            flake.radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(255,255,255,${flake.opacity})`;
+
+        ctx.fill();
+
+        flake.y += flake.speed;
+
+        flake.x += flake.drift;
+
+        if(flake.y > innerHeight + 5) {
+
+            flake.y = -5;
+
+            flake.x = Math.random() * innerWidth;
+
+        }
+
+        if(flake.x > innerWidth) flake.x = 0;
+
+        if(flake.x < 0) flake.x = innerWidth;
+
+    });
+
+    requestAnimationFrame(drawSnow);
+
+}
+
+window.addEventListener("resize", resizeSnow);
+
+resizeSnow();
+
+drawSnow();
+
+</script>
+
+</body>
+</html>
